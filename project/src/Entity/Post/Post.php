@@ -4,10 +4,12 @@ namespace App\Entity\Post;
 
 
 
+
+
 use App\Entity\Post\Thumbnail;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\PostRepository;
+use App\Repository\Post\PostRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
