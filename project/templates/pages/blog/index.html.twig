@@ -18,6 +18,13 @@
 				{% include "components/_card.html.twig" with {post : post} only %}
 			{% endfor %}
 		</div>
+		<div class="navigation flex justify-center mb-8">
+
+
+			{{ knp_pagination_render(posts) }}
+
+
+		</div>
 	</div>
 
 {% endblock %}
