@@ -40,7 +40,6 @@ class PostRepository extends ServiceEntityRepository
     {
 
         $data = $this->createQueryBuilder('p')
-            ->select('p', 'c')
             ->join('p.categories', 'c')
             ->where('p.state LIKE :state')
             ->setParameter('state', '%STATE_PUBLISHED%')
@@ -50,8 +49,8 @@ class PostRepository extends ServiceEntityRepository
 
         if (isset($category)) {
             $data = $data
-                ->andWhere('c.id LIKE :category')
-                ->setParameter('category', $category->getId());
+                ->andWhere(':category IN (c)')
+                ->setParameter('category', $category);
         }
 
 
