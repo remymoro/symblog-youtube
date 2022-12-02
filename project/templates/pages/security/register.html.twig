@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+
+{% block title %}
+
+  inscription
+
+{% endblock %}
+
+
+
+
+{% block body %}
+
+
+
+ <div class="h-screen flex items-center justify-center flex-col">
+
+		<div class=" p-10">
+
+			{{form_start(form,{attr : {class : "w-full"}})}}
+
+			{{form_row( form.firstName)}}
+
+			{{form_end(form)}}
+		</div>
+	</div>
+
+
+
+
+
+
+{% endblock %}

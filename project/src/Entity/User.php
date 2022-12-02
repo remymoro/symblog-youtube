@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank()]
+    // #[Assert\NotBlank()]
     private string $avatar;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
