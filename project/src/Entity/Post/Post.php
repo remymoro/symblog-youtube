@@ -6,14 +6,16 @@ namespace App\Entity\Post;
 
 
 
-use App\Entity\Post\Thumbnail;
+use App\Entity\User;
 use Cocur\Slugify\Slugify;
+use App\Entity\Post\Thumbnail;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
 use App\Repository\Post\PostRepository;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 
@@ -74,7 +76,9 @@ class Post
     private Collection $tags;
 
 
-
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[JoinTable('user_post_like')]
+    private Collection $likes;
 
 
     function __construct()
@@ -83,6 +87,7 @@ class Post
         $this->updatedAt = new \DateTimeImmutable();
         $this->categories = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
 
@@ -270,7 +275,7 @@ class Post
         //  je vérifie si le tag est dans la collection
         //  si c'est le cas, je le supprime
         // je retourne l'objet courant
-        
+
         if ($this->tags->removeElement($tag)) {
             $tag->removePost($this);
         }
@@ -280,6 +285,49 @@ class Post
 
 
 
+    /**
+     * @return Collection|like[]
+     */
+
+
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+
+    public function addLike(User $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+        }
+
+        return $this;
+    }
+
+
+    public function removeLike(User $like): self
+    {
+        $this->likes->removeElement($like);
+
+        return $this;
+    }
+
+
+    public function isLikedByUser(User $user): bool
+    {
+        return $this->likes->contains($user);
+    }
+
+    /**
+     * Get the number of likes 
+     *
+     * @return integer
+     */
+    public function howManyLikes(): int
+    {
+        return count($this->likes);
+    }
 
 
 
