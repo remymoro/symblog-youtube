@@ -9,8 +9,17 @@
 
 {% block body %}
 
+
+   
+
+
 	<div class="container mx-auto">
 		<h1 class="text-5xl text-center mt-24 mb-8 ">ok{{title}}</h1>
+
+
+		{% include "components/_dropdown.html.twig" with{
+			options : allCategories
+		} %}
 
 		<div class="flex flex-row justify-evenly flex-wrap mt-8">
 			{% for post in posts %}
