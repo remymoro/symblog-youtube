@@ -70,12 +70,19 @@ class Post
 
 
 
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'posts')]
+    private Collection $tags;
+
+
+
+
 
     function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->categories = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
 
@@ -184,10 +191,7 @@ class Post
     }
 
 
-    function __toString()
-    {
-        return $this->title;
-    }
+
 
 
     public function getThumbnail(): ?Thumbnail
@@ -204,6 +208,9 @@ class Post
     }
 
 
+    /**
+     * @return Collection|Category[]
+     */
     public function getCategories(): Collection
     {
         return $this->categories;
@@ -228,5 +235,57 @@ class Post
         }
 
         return $this;
+    }
+
+
+    /**
+     * @return Collection|Tag[]
+     */
+
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+
+
+    public function addTag(Tag $tag): self
+    {
+        //  je vérifie si le tag n'est pas déjà dans la collection
+        //  si ce n'est pas le cas, je l'ajoute
+        // je retourne l'objet courant
+
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addPost($this);
+        }
+
+        return $this;
+    }
+
+
+    public function removeTag(Tag $tag): self
+    {
+
+        //  je vérifie si le tag est dans la collection
+        //  si c'est le cas, je le supprime
+        // je retourne l'objet courant
+        
+        if ($this->tags->removeElement($tag)) {
+            $tag->removePost($this);
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+
+    function __toString()
+    {
+        return $this->title;
     }
 }

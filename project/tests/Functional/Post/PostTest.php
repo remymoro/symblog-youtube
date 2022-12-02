@@ -30,7 +30,7 @@ class PostTest extends WebTestCase
 
         $client->request(
             Request::METHOD_GET,
-            $urlGeneratorInterface->generate('post.show', ['slug' => $post->getSlug()])
+            $urlGeneratorInterface->generate('post_show', ['slug' => $post->getSlug()])
         );
 
         $this->assertResponseIsSuccessful();
@@ -58,7 +58,7 @@ class PostTest extends WebTestCase
 
         $crawler = $client->request(
             Request::METHOD_GET,
-            $urlGeneratorInterface->generate('post.show', ['slug' => $post->getSlug()])
+            $urlGeneratorInterface->generate('post_show', ['slug' => $post->getSlug()])
         );
 
         $this->assertResponseIsSuccessful();
@@ -70,7 +70,7 @@ class PostTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertRouteSame('post.index');
+        $this->assertRouteSame('post_index');
     }
 
     public function testShareOnFacebookWorks(): void
@@ -89,7 +89,7 @@ class PostTest extends WebTestCase
         /** @var Post */
         $post = $postRepository->findOneBy([]);
 
-        $postLink = $urlGeneratorInterface->generate('post.show', ['slug' => $post->getSlug()]);
+        $postLink = $urlGeneratorInterface->generate('post._show', ['slug' => $post->getSlug()]);
 
         $crawler = $client->request(
             Request::METHOD_GET,
@@ -128,7 +128,7 @@ class PostTest extends WebTestCase
         /** @var Post */
         $post = $postRepository->findOneBy([]);
 
-        $postLink = $urlGeneratorInterface->generate('post.show', ['slug' => $post->getSlug()]);
+        $postLink = $urlGeneratorInterface->generate('post_show', ['slug' => $post->getSlug()]);
 
         $crawler = $client->request(
             Request::METHOD_GET,
@@ -169,7 +169,7 @@ class PostTest extends WebTestCase
 
         $crawler = $client->request(
             Request::METHOD_GET,
-            $urlGeneratorInterface->generate('post.show', ['slug' => $post->getSlug()])
+            $urlGeneratorInterface->generate('post_show', ['slug' => $post->getSlug()])
         );
 
         $this->assertResponseIsSuccessful();

@@ -3,13 +3,14 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
+use App\Entity\Post\Tag;
 use App\Entity\Post\Category;
 use App\Repository\Post\PostRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class CategoryFixtures extends Fixture implements DependentFixtureInterface
+class CategoryTagFixtures extends Fixture implements DependentFixtureInterface
 {
 
 
@@ -19,7 +20,8 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
     ) {
     }
 
-    // problème de lancement de category avant post donc  implement 
+    // problème de lancement de category avant post donc  implement  de DependentFixtureInterface
+    // respecter le contrat de l'interface getDependencies
 
 
     public function load(ObjectManager $manager): void
@@ -27,6 +29,7 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr');
 
 
+        //  je crée 10 catégories
 
         $categories = [];
         for ($i = 0; $i < 10; $i++) {
@@ -37,15 +40,16 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
                 );
 
 
-
-
-
             $manager->persist($category);
             $categories[] = $category;
         }
 
+
+
+
         $posts = $this->postRepository->findAll();
         // pas de post donc pas de catégorie
+
 
 
         foreach ($posts as $post) {
@@ -56,8 +60,35 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
         }
 
 
+
+        // Tag
+        $tags = [];
+        for ($i = 0; $i < 10; $i++) {
+            $tag = new Tag();
+            $tag->setName($faker->words(1, true) . ' ' . $i)
+                ->setDescription(
+                    mt_rand(0, 1) === 1 ? $faker->realText(254) : null
+                );
+
+            $manager->persist($tag);
+            $tags[] = $tag;
+        }
+
+        foreach ($posts as $post) {
+            for ($i = 0; $i < mt_rand(1, 5); $i++) {
+                $post->addTag(
+                    $tags[mt_rand(0, count($tags) - 1)]
+                );
+            }
+        }
+
+        //  on tire la chasse
         $manager->flush();
     }
+
+
+
+
 
 
     // implement DependentFixtureInterface

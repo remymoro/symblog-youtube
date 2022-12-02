@@ -73,7 +73,7 @@ class BlogTest extends WebTestCase
 
         $crawler = $client->request(
             Request::METHOD_GET,
-            $urlGeneratorInterface->generate('post.index')
+            $urlGeneratorInterface->generate('post_index')
         );
 
         $this->assertResponseIsSuccessful();
@@ -87,7 +87,7 @@ class BlogTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertRouteSame('post.index');
+        $this->assertRouteSame('post_index');
 
         $this->assertSelectorExists('form[name=search]');
         $this->assertSelectorNotExists('div.card');
