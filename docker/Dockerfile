@@ -1,5 +1,8 @@
 FROM php:8.1-apache
 
+
+
+
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     \
     &&  apt-get update \
@@ -25,5 +28,14 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     pdo pdo_mysql opcache intl zip calendar dom mbstring gd xsl \
     \
     &&  pecl install apcu && docker-php-ext-enable apcu
+
+
+#  donne moi le droit pour le dossier /var/www/html
+
+
+
+
+
+
 
 WORKDIR /var/www/

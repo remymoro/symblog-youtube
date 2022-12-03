@@ -8,12 +8,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity('email', 'Cet email existe déjà au sein de l\'application.')]
-#[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,14 +25,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private ?string $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    // #[Assert\NotBlank()]
-    private string $avatar;
+
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     #[Assert\NotBlank()]
     #[Assert\Email()]
     private string $email;
+
+
+
+    #[Vich\UploadableField(mapping: 'avatar', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $imageName = null;
+
+
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $lastName = null;
@@ -62,28 +72,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new \DateTimeImmutable();
     }
 
-    #[ORM\PrePersist]
-    public function prePersist(): void
-    {
-        $this->avatar = 'https://avatars.dicebear.com/api/big-ears-neutral/' . $this->email . '.svg';
-    }
-
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-        $this->avatar = 'https://avatars.dicebear.com/api/big-ears-neutral/' . $this->email . '.svg';
-        $this->updatedAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function getAvatar(): string
-    {
-        return $this->avatar;
-    }
+
+
+
+
 
     public function getEmail(): string
     {
@@ -192,5 +190,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
+     */
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+
+
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    /**
+     * Get the value of imageName
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
     }
 }
