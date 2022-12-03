@@ -2,6 +2,7 @@
 
 namespace App\Controller\Blog;
 
+
 use App\Entity\Post\Post;
 use App\Repository\Post\PostRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,8 +17,12 @@ class PostController extends AbstractController
     #[Route('/', name: 'post_index', methods: ['GET'])]
     public  function index(
         PostRepository $postRepository,
-        Request $request
+        Request $request,
+        
     ): Response {
+
+
+    
 
         return $this->render('pages/post/index.html.twig', [
             'posts' => $postRepository->findPublished($request->query->getInt('page', 1))
